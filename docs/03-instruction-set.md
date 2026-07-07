@@ -1,0 +1,492 @@
+# Instruction Set Classification of the 8085 Microprocessor
+
+---
+## Understanding Assembly Language Instructions
+
+Before studying the instruction set, you need to understand the structure of an assembly language statement.
+
+---
+### Anatomy of an 8085 Instruction
+
+Every assembly language statement has up to four fields:
+
+```
+[Label:]   Mnemonic   [Operand(s)]   [; Comment]
+```
+
+- **Label (optional):** A name given to a memory address, used as a target for jump instructions.
+
+- **Mnemonic:** The symbolic name of the operation (e.g., MOV, ADD, JMP).
+
+- **Operand(s) (optional):** The data or registers the instruction acts on. Some instructions have no operand, some have one, and some have two.
+
+- **Comment (optional):** Any text after a semicolon (`;`) is ignored by the assembler. Used to explain what the instruction does.
+
+---
+**Example:**
+
+```assembly
+START:  MVI A, 05H   ; Load 05H into the Accumulator
+        MOV B, A     ; Copy Accumulator to register B
+        ADD B        ; Add B to A, result goes to A
+STOP:   HLT          ; Stop execution
+```
+---
+### Instruction Size (Bytes)
+
+| Instruction Type | Size | Example |
+|---|---|---|
+| No operand (implied) | 1 byte | HLT, NOP, CMA |
+| 8-bit data operand | 2 bytes | MVI A, 45H |
+| Register operand | 1 byte | MOV A, B |
+| 16-bit address operand | 3 bytes | JMP 2000H, LDA 3050H |
+| 16-bit immediate data | 3 bytes | LXI H, 3050H |
+
+---
+## Overview of Instruction Categories
+
+The 8085 instruction set is grouped into the following categories:
+
+| Category | Description | Example |
+|---|---|---|
+| Data Transfer Instructions | Move data between registers, memory, and I/O | MOV, MVI, LDA, STA |
+| Arithmetic Instructions | Add, subtract, increment, decrement | ADD, SUB, INR, DCR |
+| Logical Instructions | AND, OR, XOR, compare, rotate, complement | ANA, ORA, XRA, CMP |
+| Branch Instructions | Change program flow conditionally or unconditionally | JMP, JZ, CALL, RET |
+| Stack / Machine Control | Stack operations, halt, no-op, interrupt control | PUSH, POP, HLT, NOP |
+| I/O Instructions | Read from or write to I/O ports | IN, OUT |
+
+---
+##  Flag Effects Reference
+
+Many instructions affect the flag register. This table shows which flags are affected by the most commonly used instructions. (S = Sign, Z = Zero, AC = Auxiliary Carry, P = Parity, CY = Carry; `*` means affected, `-` means not affected, `0` means always reset)
+
+| Instruction | S | Z | AC | P | CY |
+|---|---|---|---|---|---|
+| ADD r/M | * | * | * | * | * |
+| ADI data | * | * | * | * | * |
+| ADC r/M | * | * | * | * | * |
+| SUB r/M | * | * | * | * | * |
+| SUI data | * | * | * | * | * |
+| INR r/M | * | * | * | * | - |
+| DCR r/M | * | * | * | * | - |
+| DAD rp | - | - | - | - | * |
+| ANA r/M | * | * | * | * | 0 |
+| ORA r/M | * | * | 0 | * | 0 |
+| XRA r/M | * | * | 0 | * | 0 |
+| CMP r/M | * | * | * | * | * |
+| RLC | - | - | - | - | * |
+| RRC | - | - | - | - | * |
+| RAL | - | - | - | - | * |
+| RAR | - | - | - | - | * |
+| CMA | - | - | - | - | - |
+| STC | - | - | - | - | * |
+| CMC | - | - | - | - | * |
+| MOV, MVI, LDA, STA | - | - | - | - | - |
+
+---
+## Section 1: Data Transfer Instructions
+
+Data transfer instructions move data between registers, between registers and memory, and between registers and I/O ports. They do not affect any flags (except when explicitly noted).
+
+| Opcode | Operand | Meaning | Explanation |
+|---|---|---|---|
+| MOV | Rd, Rs | Copy register to register | Copies the contents of source register Rs into destination register Rd. Neither register is altered except that Rd gets the new value. Example: `MOV H, L` |
+| MOV | M, Rs | Copy register to memory | Copies the contents of Rs into the memory location whose address is in the HL pair. Example: `MOV M, A` |
+| MOV | Rd, M | Copy memory to register | Copies the byte at the memory location pointed to by HL into Rd. Example: `MOV A, M` |
+| MVI | Rd, 8-bit data | Move immediate to register | Loads the 8-bit constant directly into Rd. Example: `MVI B, 55H` |
+| MVI | M, 8-bit data | Move immediate to memory | Stores the 8-bit constant into the memory location pointed to by HL. Example: `MVI M, 3AH` |
+| LDA | 16-bit address | Load Accumulator direct | Copies the byte at the specified 16-bit memory address into the Accumulator. Example: `LDA 2034H` |
+| STA | 16-bit address | Store Accumulator direct | Copies the Accumulator contents into the specified 16-bit memory address. Example: `STA 3050H` |
+| LDAX | B or D | Load Accumulator indirect | Uses the BC or DE register pair as a memory address pointer and loads the byte at that address into the Accumulator. Example: `LDAX B` |
+| STAX | B or D | Store Accumulator indirect | Stores the Accumulator contents into the memory location pointed to by BC or DE. Example: `STAX D` |
+| LXI | Reg. pair, 16-bit data | Load register pair immediate | Loads a 16-bit constant into a register pair (BC, DE, HL, or SP). Example: `LXI H, 2050H` |
+| LHLD | 16-bit address | Load HL direct | Copies the byte at the given address into L and the byte from the next address into H. Example: `LHLD 3000H` |
+| SHLD | 16-bit address | Store HL direct | Stores L at the given address and H at the next address. Example: `SHLD 3000H` |
+| XCHG | None | Exchange HL with DE | Swaps the contents of H with D and L with E. Example: `XCHG` |
+| XTHL | None | Exchange HL with top of stack | Swaps the contents of L with the byte at (SP) and H with the byte at (SP+1). Example: `XTHL` |
+| SPHL | None | Copy HL to Stack Pointer | Loads the Stack Pointer with the value in the HL pair. Example: `SPHL` |
+| PUSH | Reg. pair | Push register pair onto stack | SP is decremented by 1 and the high-order register is written; SP is decremented again and the low-order register is written. Valid pairs: BC, DE, HL, PSW. Example: `PUSH B` |
+| POP | Reg. pair | Pop from stack to register pair | The byte at SP goes to the low-order register; SP increments; the byte at the new SP goes to the high-order register; SP increments. Valid pairs: BC, DE, HL, PSW. Example: `POP H` |
+| IN | 8-bit port address | Input from port | Reads the byte from the I/O port and loads it into the Accumulator. Example: `IN 01H` |
+| OUT | 8-bit port address | Output to port | Copies the Accumulator contents to the specified I/O port. Example: `OUT 02H` |
+
+---
+###  The PSW (Program Status Word)
+
+The **PSW** is a 16-bit entity formed by combining the Accumulator (high byte) and the Flag register (low byte):
+
+```
+PSW (16-bit):
+High Byte > Accumulator (A)
+Low Byte  > Flag Register (S Z 0 AC 0 P 1 CY)
+```
+
+`PUSH PSW` saves both the Accumulator and all 5 flags onto the stack. `POP PSW` restores them. This is critical when writing subroutines that must not disturb the calling program's flags.
+
+---
+###  Stack Operation: How PUSH and POP Work
+
+The stack is a LIFO (Last In, First Out) region of RAM. The Stack Pointer (SP) always points to the most recently stored byte (the top of the stack). The stack grows **downward** (toward lower addresses).
+
+```
+PUSH B  (BC = 25H, 89H):
+
+Before PUSH:             After PUSH:
+              SP--> [  ] 2201H        [25H] 2200H  <- SP now
+                    [  ] 2202H        [89H] 2201H
+                    [  ] 2203H        [  ] 2202H
+
+1. SP decremented to 2200H, B (25H) stored there.
+   Wait - actually: H byte first:
+   SP decremented to 2200H, high byte (B = 25H) stored.
+   SP decremented to 21FFH, low byte (C = 89H) stored.
+   SP now = 21FFH.
+```
+
+> Remember: `PUSH PSW` uses A as the high byte and the flag register as the low byte. `POP PSW` restores them in the same way.
+
+---
+###  Example Programs: Data Transfer
+
+```asm
+; Program: Copy the contents of memory location 3000H to 3001H
+; Using LDA and STA (Direct Addressing)
+
+LDA  3000H    ; Load the byte from address 3000H into Accumulator
+STA  3001H    ; Store the Accumulator into address 3001H
+HLT           ; Stop
+```
+----
+```asm
+; Program: Load 2 numbers, compute their sum, and store the result
+
+LDA  2050H    ; Load first number from memory into A
+MOV  B, A     ; Save it in B
+LDA  2051H    ; Load second number into A
+ADD  B        ; A = A + B
+STA  2052H    ; Store result at 2052H
+HLT           ; Stop
+```
+---
+## Section 2: Arithmetic Instructions
+
+Arithmetic instructions perform addition, subtraction, increment, and decrement operations. Most arithmetic instructions affect the S, Z, AC, P, and CY flags. Exceptions are noted.
+
+| Opcode | Operand | Meaning | Explanation |
+|---|---|---|---|
+| ADD | R / M | Add register or memory to Accumulator | Adds the contents of the register (or the memory byte at the address in HL if M) to the Accumulator. Result in A. Affects all flags. Example: `ADD B` |
+| ADC | R / M | Add with Carry | Same as ADD but also adds the current value of the Carry flag. Used for multi-byte addition. Example: `ADC C` |
+| ADI | 8-bit data | Add immediate | Adds the 8-bit constant to the Accumulator. Example: `ADI 05H` |
+| ACI | 8-bit data | Add immediate with Carry | Adds the 8-bit constant and the Carry flag to the Accumulator. Example: `ACI 02H` |
+| DAD | Reg. pair | Add register pair to HL | Adds the 16-bit value of BC, DE, HL, or SP to the HL pair. Result in HL. Only affects the CY flag. Example: `DAD B` |
+| SUB | R / M | Subtract register or memory from Accumulator | Subtracts the register or memory byte from A. Result in A. Affects all flags. Example: `SUB B` |
+| SBB | R / M | Subtract with Borrow | Same as SUB but also subtracts the CY flag. Used for multi-byte subtraction. Example: `SBB D` |
+| SUI | 8-bit data | Subtract immediate | Subtracts the 8-bit constant from A. Example: `SUI 03H` |
+| SBI | 8-bit data | Subtract immediate with Borrow | Subtracts the 8-bit constant and the CY flag from A. Example: `SBI 01H` |
+| INR | R / M | Increment by 1 | Increments the register or memory byte by 1. Affects S, Z, AC, P flags but **not CY**. Example: `INR B` |
+| DCR | R / M | Decrement by 1 | Decrements the register or memory byte by 1. Affects S, Z, AC, P flags but **not CY**. Example: `DCR C` |
+| INX | Reg. pair | Increment register pair by 1 | Increments the 16-bit register pair by 1. **Does not affect any flags**. Example: `INX H` |
+| DCX | Reg. pair | Decrement register pair by 1 | Decrements the 16-bit register pair by 1. **Does not affect any flags**. Example: `DCX B` |
+| DAA | None | Decimal Adjust Accumulator | Adjusts the binary result in A to a valid BCD result after a BCD addition. If the lower nibble exceeds 9 or AC is set, adds 6 to the lower nibble. If the upper nibble exceeds 9 or CY is set, adds 6 to the upper nibble. Affects all flags. Example: `DAA` |
+
+---
+###  Multi Byte Arithmetic
+
+The 8085 works with 8-bit data, but using ADC/SBB you can perform 16-bit (or larger) arithmetic.
+
+```asm
+; Add two 16-bit numbers stored as:
+; First number:  Low byte at 2050H, High byte at 2051H
+; Second number: Low byte at 2052H, High byte at 2053H
+; Result:        Low byte at 2054H, High byte at 2055H
+
+LDA  2050H    ; Load low byte of first number
+MOV  C, A     ; Save in C
+LDA  2052H    ; Load low byte of second number
+ADD  C        ; Add low bytes; CY flag set if carry occurs
+STA  2054H    ; Store the low byte of the result
+
+LDA  2051H    ; Load high byte of first number
+MOV  C, A     ; Save in C
+LDA  2053H    ; Load high byte of second number
+ADC  C        ; Add high bytes PLUS the carry from low byte addition
+STA  2055H    ; Store the high byte of the result
+
+HLT
+```
+---
+###  Example Program: Find the Largest of Two Numbers
+
+```asm
+; Compare two numbers at 2050H and 2051H.
+; Store the larger at 2052H.
+
+LDA  2050H    ; Load first number into A
+MOV  B, A     ; Save first number in B
+LDA  2051H    ; Load second number into A
+CMP  B        ; Compare A with B (A - B internally)
+JNC  STORE    ; If CY = 0, A >= B, so A is larger (or equal), jump
+MOV  A, B     ; Otherwise B is larger, move B into A
+STORE: STA 2052H  ; Store the larger value
+HLT
+```
+---
+## Section 3: Logical Instructions
+
+Logical instructions perform bitwise operations on the Accumulator. They are used for masking, testing, setting, and clearing specific bits.
+
+| Opcode | Operand | Meaning | Explanation |
+|---|---|---|---|
+| ANA | R / M | AND Accumulator with register or memory | Bitwise AND of A with the operand. Result in A. CY is reset, AC is set. Example: `ANA B` |
+| ANI | 8-bit data | AND Accumulator with immediate | Bitwise AND of A with the 8-bit constant. CY is reset. Example: `ANI 0FH` (masks lower 4 bits) |
+| ORA | R / M | OR Accumulator with register or memory | Bitwise OR of A with the operand. Result in A. CY and AC are reset. Example: `ORA C` |
+| ORI | 8-bit data | OR Accumulator with immediate | Bitwise OR of A with the 8-bit constant. Example: `ORI 01H` (sets bit 0) |
+| XRA | R / M | XOR Accumulator with register or memory | Bitwise XOR of A with the operand. Result in A. CY and AC are reset. Example: `XRA A` (clears A to 00H) |
+| XRI | 8-bit data | XOR Accumulator with immediate | Bitwise XOR of A with the 8-bit constant. Example: `XRI FFH` (inverts all bits, same as CMA but affects more flags) |
+| CMP | R / M | Compare register or memory with Accumulator | Subtracts the operand from A internally (does not store result). Only flags are updated. If Z=1, they are equal. If CY=1, A < operand. Example: `CMP B` |
+| CPI | 8-bit data | Compare immediate with Accumulator | Same as CMP but compares A with an 8-bit constant. Example: `CPI 64H` |
+| RLC | None | Rotate Accumulator left | Each bit shifts left. D7 wraps to D0 and also goes to CY. Only CY is affected. Example: `RLC` (multiplies by 2 for unsigned values without carry) |
+| RRC | None | Rotate Accumulator right | Each bit shifts right. D0 wraps to D7 and also goes to CY. Only CY is affected. Example: `RRC` |
+| RAL | None | Rotate Accumulator left through Carry | Each bit shifts left. D7 goes to CY and the old CY goes to D0. Only CY is affected. Example: `RAL` |
+| RAR | None | Rotate Accumulator right through Carry | Each bit shifts right. D0 goes to CY and the old CY goes to D7. Only CY is affected. Example: `RAR` |
+| CMA | None | Complement Accumulator | Inverts every bit in A (1's complement). No flags are affected. Example: `CMA` |
+| CMC | None | Complement Carry | Inverts the CY flag. No other flags are affected. Example: `CMC` |
+| STC | None | Set Carry | Sets CY to 1. No other flags are affected. Example: `STC` |
+
+---
+###  Practical Use of Logical Instructions
+
+**Masking (isolating specific bits):**
+```asm
+; Keep only the lower 4 bits of the Accumulator, clear the upper 4 bits
+ANI  0FH    ; AND A with 00001111B
+```
+
+**Setting a specific bit:**
+```asm
+; Set bit 3 of the Accumulator (leave other bits unchanged)
+ORI  08H    ; OR A with 00001000B
+```
+
+**Clearing a specific bit:**
+```asm
+; Clear bit 5 of the Accumulator (leave other bits unchanged)
+ANI  0DFH   ; AND A with 11011111B
+```
+
+**Clearing the Accumulator quickly:**
+```asm
+XRA  A      ; A XOR A = 00H (also clears CY and AC, sets Z=1, P=1, S=0)
+```
+
+---
+## Section 4: Branch Instructions
+
+Branch instructions change the flow of program execution. Without them, the CPU always executes instructions sequentially.
+
+---
+### Unconditional Jump
+
+| Opcode | Operand | Meaning | Explanation |
+|---|---|---|---|
+| JMP | 16-bit address | Unconditional jump | The Program Counter is loaded with the given address. Execution continues from there. Example: `JMP 2000H` |
+
+---
+### Conditional Jumps
+
+All conditional jumps check a specific flag. If the condition is true, PC is loaded with the 16-bit address. If false, execution continues with the next instruction.
+
+| Opcode | Condition Checked | Flag State | Description |
+|---|---|---|---|
+| JC | Carry set | CY = 1 | Jump if carry |
+| JNC | Carry not set | CY = 0 | Jump if no carry |
+| JZ | Zero set | Z = 1 | Jump if zero (equal) |
+| JNZ | Zero not set | Z = 0 | Jump if not zero (not equal) |
+| JM | Sign set | S = 1 | Jump if minus (negative) |
+| JP | Sign not set | S = 0 | Jump if positive |
+| JPE | Parity set | P = 1 | Jump if parity even |
+| JPO | Parity not set | P = 0 | Jump if parity odd |
+
+---
+### Subroutine Call Instructions
+
+A subroutine (also called a procedure or function) is a reusable block of code. The CALL instruction jumps to it and automatically saves the return address on the stack.
+
+| Opcode | Operand | Meaning | Explanation |
+|---|---|---|---|
+| CALL | 16-bit address | Unconditional subroutine call | The address of the instruction after CALL is pushed onto the stack (return address), then PC is loaded with the operand address. Example: `CALL 3000H` |
+
+Conditional call instructions follow the same flag logic as conditional jumps:
+
+| Opcode | Flag State | Description |
+|---|---|---|
+| CC | CY = 1 | Call if carry |
+| CNC | CY = 0 | Call if no carry |
+| CZ | Z = 1 | Call if zero |
+| CNZ | Z = 0 | Call if not zero |
+| CM | S = 1 | Call if minus |
+| CP | S = 0 | Call if positive |
+| CPE | P = 1 | Call if parity even |
+| CPO | P = 0 | Call if parity odd |
+
+---
+### Return Instructions
+
+Return instructions bring execution back from a subroutine to the instruction that follows the CALL.
+
+| Opcode | Operand | Meaning | Explanation |
+|---|---|---|---|
+| RET | None | Unconditional return | The return address is popped from the stack into PC. Execution resumes in the calling program. Example: `RET` |
+
+Conditional return instructions:
+
+| Opcode | Flag State | Description |
+|---|---|---|
+| RC | CY = 1 | Return if carry |
+| RNC | CY = 0 | Return if no carry |
+| RZ | Z = 1 | Return if zero |
+| RNZ | Z = 0 | Return if not zero |
+| RM | S = 1 | Return if minus |
+| RP | S = 0 | Return if positive |
+| RPE | P = 1 | Return if parity even |
+| RPO | P = 0 | Return if parity odd |
+
+---
+### Other Branch Instructions
+
+| Opcode | Operand | Meaning | Explanation |
+|---|---|---|---|
+| PCHL | None | Load PC from HL | The PC is loaded with the value in the HL pair. Execution jumps to that address. Used for computed (indirect) jumps. Example: `PCHL` |
+| RST | 0 to 7 | Restart | A 1-byte call to one of eight fixed restart addresses. Used mainly for interrupt service routines. Example: `RST 3` (jumps to 0018H) |
+
+---
+### RST Restart Addresses
+
+| Instruction | Restart Address |
+|---|---|
+| RST 0 | 0000H |
+| RST 1 | 0008H |
+| RST 2 | 0010H |
+| RST 3 | 0018H |
+| RST 4 | 0020H |
+| RST 5 | 0028H |
+| RST 6 | 0030H |
+| RST 7 | 0038H |
+
+---
+### Hardware Interrupt Restart Addresses
+
+The 8085 has 4 additional hardware interrupts that generate RST instructions internally:
+
+| Interrupt | Restart Address | Priority |
+|---|---|---|
+| TRAP | 0024H | Highest (non-maskable) |
+| RST 7.5 | 003CH | Second |
+| RST 6.5 | 0034H | Third |
+| RST 5.5 | 002CH | Fourth (lowest) |
+
+---
+###  How CALL and RET Work Together
+
+```assembly
+; Main program
+LXI SP, 27FFH   ; Initialize Stack Pointer to top of RAM
+MVI A, 0AH      ; Load 10 into A
+CALL DOUBLE     ; Call subroutine at label DOUBLE
+STA  3000H      ; Store the result (A is now 14H = 20)
+HLT
+
+; Subroutine: DOUBLE - adds A to itself
+DOUBLE: ADD A   ; A = A + A (doubles the value)
+        RET     ; Return to the instruction after CALL
+```
+
+When `CALL DOUBLE` executes:
+1. The address of `STA 3000H` is pushed onto the stack.
+2. PC is loaded with the address of `DOUBLE`.
+3. `ADD A` executes.
+4. `RET` pops the saved address back into PC, resuming at `STA 3000H`.
+
+---
+###  Example Program: Looping with Conditional Branch
+
+```assembly
+; Count from 01H to 05H and store each count at 3000H, 3001H, ...
+
+LXI H, 3000H    ; HL points to starting memory address
+MVI B, 05H      ; B = loop count = 5
+MVI C, 01H      ; C = starting value
+
+LOOP: MOV M, C  ; Store C into memory at address in HL
+      INX H     ; Point HL to next memory location
+      INR C     ; Increment C
+      DCR B     ; Decrement loop counter
+      JNZ LOOP  ; If B is not zero, go back to LOOP
+      HLT       ; Loop done, stop
+```
+
+---
+## Section 5: Machine Control Instructions
+
+| Opcode | Operand | Meaning | Explanation |
+|---|---|---|---|
+| NOP | None | No operation | The CPU does nothing for one instruction cycle. Used for timing delays or placeholder code. |
+| HLT | None | Halt | The CPU finishes the current instruction and halts. An interrupt or hardware RESET is required to resume. Every program must end with HLT. |
+| DI | None | Disable Interrupts | The interrupt enable flip-flop is reset. All maskable interrupts (RST 5.5, 6.5, 7.5) are disabled. TRAP cannot be disabled. |
+| EI | None | Enable Interrupts | The interrupt enable flip-flop is set. All maskable interrupts are re-enabled. |
+| RIM | None | Read Interrupt Mask | Reads the current interrupt mask and serial input bit (SID) into the Accumulator. |
+| SIM | None | Set Interrupt Mask | Uses the current Accumulator value to set interrupt masks and the serial output bit (SOD). |
+
+---
+##  Section 6: Writing Your First Complete Assembly Programs
+
+---
+### Program 1: Add Two Single Byte Numbers
+
+```asm
+; Add the numbers at memory 2050H and 2051H.
+; Store the result at 2052H.
+
+LDA  2050H    ; A = first number
+MOV  B, A     ; B = first number (save it)
+LDA  2051H    ; A = second number
+ADD  B        ; A = A + B
+STA  2052H    ; Store result
+HLT
+```
+---
+### Program 2: Subtract Two Numbers
+```asm
+; Subtract the number at 2051H from the number at 2050H.
+; Store result at 2052H.
+
+LDA  2050H    ; A = minuend
+MOV  B, A     ; Save in B
+LDA  2051H    ; A = subtrahend
+MOV  C, A     ; Save in C
+MOV  A, B     ; A = minuend again
+SUB  C        ; A = A - C
+STA  2052H    ; Store result
+HLT
+```
+---
+### Program 3: Count the Number of Ones in a Byte
+```asm
+; Count how many bits are set (1) in the byte stored at 2050H.
+; Store the count at 2051H.
+
+LDA  2050H    ; Load the byte
+MVI B, 00H    ; B = counter, starts at 0
+MVI C, 08H    ; C = 8 (we check 8 bits)
+
+CHECK: RRC     ; Rotate right; LSB goes to CY
+       JNC  SKIP   ; If CY = 0, bit was 0, skip increment
+       INR  B       ; CY = 1, bit was 1, increment counter
+SKIP:  DCR  C       ; Decrement bit counter
+       JNZ  CHECK   ; Repeat for all 8 bits
+       MOV  A, B    ; Move count to A
+       STA  2051H   ; Store count
+       HLT
+```
+---
