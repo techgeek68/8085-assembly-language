@@ -24,7 +24,7 @@ A curated educational repository for learning Intel 8085 assembly language throu
 
 ## About
 
-This repository brings together core 8085 microprocessor theory and a practical collection of assembly language programs in one place. It is designed for students, self-learners, and anyone who wants a cleaner, easier-to-navigate reference for studying Intel 8085 programming concepts and examples.
+This repository brings together core 8085 microprocessor theory and a practical collection of assembly language programs in one place. It is designed for students, self learners, and anyone who wants a cleaner, easier to navigate reference for studying Intel 8085 programming concepts and examples.
 
 ## Prerequisites
 
@@ -33,7 +33,7 @@ Before using this repository, it helps to be familiar with:
 - Basic digital electronics
 - Number systems (binary, decimal, hexadecimal)
 
-Recommended simulator: [GNUSim8085](http://gnusim8085.srid.ca) — a free, cross-platform 8085 simulator for writing, assembling, and running programs.
+Recommended simulator: [GNUSim8085](http://gnusim8085.srid.ca) - A free, cross platform 8085 simulator for writing, assembling, and running programs.
 
 ## Theory & Reference Docs
 
@@ -107,8 +107,8 @@ Recommended simulator: [GNUSim8085](http://gnusim8085.srid.ca) — a free, cross
 |---|---|---|
 | 01 | [01-store-8bit-direct.asm](programs/01-data-transfer/01-store-8bit-direct.asm) | Store 8-bit data using direct addressing |
 | 02 | [02-store-8bit-indirect.asm](programs/01-data-transfer/02-store-8bit-indirect.asm) | Store 8-bit data using indirect (HL) addressing |
-| 03 | [03-exchange-memory-direct.asm](programs/01-data-transfer/03-exchange-memory-direct.asm) | Exchange two memory locations — direct |
-| 04 | [04-exchange-memory-indirect.asm](programs/01-data-transfer/04-exchange-memory-indirect.asm) | Exchange two memory locations — indirect |
+| 03 | [03-exchange-memory-direct.asm](programs/01-data-transfer/03-exchange-memory-direct.asm) | Exchange two memory locations: direct |
+| 04 | [04-exchange-memory-indirect.asm](programs/01-data-transfer/04-exchange-memory-indirect.asm) | Exchange two memory locations: indirect |
 
 ### 02 · Arithmetic
 
