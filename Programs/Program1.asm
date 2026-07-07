@@ -1,0 +1,5 @@
+; Program 1: Store 8 bit Data in Memory
+; Method 1, direct addressing
+        MVI  A, 40H     ; A gets 40H
+        STA  4000H      ; store A at address 4000H
+        HLT             ; stop
