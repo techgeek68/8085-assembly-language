@@ -172,8 +172,8 @@ Recommended simulator: [GNUSim8085](http://gnusim8085.srid.ca) - A free, cross p
 ## Getting Started
 
 1. Clone the repository.
-2. Install [GNUSim8085](http://gnusim8085.srid.ca).
-3. Open any `.asm` file in GNUSim8085.
+2. Install [Sim8085](https://drive.google.com/drive/folders/1EPnJPWYVlkJ-Ycyg66wguKT5sb5rTf_M?usp=drive_link).
+3. Open any `.asm` file in Sim8085.
 4. Load it, assemble, and run the program.
 
 ## Contributing
