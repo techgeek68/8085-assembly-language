@@ -33,7 +33,7 @@ Before using this repository, it helps to be familiar with:
 - Basic digital electronics
 - Number systems (binary, decimal, hexadecimal)
 
-Recommended simulator: [GNUSim8085](http://gnusim8085.srid.ca) - A free, cross platform 8085 simulator for writing, assembling, and running programs.
+Recommended simulator: [Sim8085](https://drive.google.com/drive/folders/1EPnJPWYVlkJ-Ycyg66wguKT5sb5rTf_M?usp=drive_link): An 8085 simulator for writing, assembling, and running programs.
 
 ## Theory & Reference Docs
 
