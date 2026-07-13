@@ -1,4 +1,4 @@
-; Program 9: Addition of a Block of 8 bit Numbers with Carry
+; Program 9 Addition of a Block of 8 bit Numbers with Carry
         LXI  H, 6000H   ; base of the ten byte array
         MVI  B, 00H     ; carry counter, becomes the high byte
         MVI  C, 09H     ; nine more additions follow the first byte
