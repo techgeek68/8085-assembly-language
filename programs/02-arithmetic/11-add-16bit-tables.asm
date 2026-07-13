@@ -1,4 +1,4 @@
-; Program 15: Addition of Corresponding Elements of Two 16 bit Tables
+; Program 15 Addition of Corresponding Elements of Two 16 bit Tables
         LXI  H, 8050H   ; table 1 pointer
         LXI  B, 8070H   ; table 2 pointer
         LXI  D, 8090H   ; result table pointer
