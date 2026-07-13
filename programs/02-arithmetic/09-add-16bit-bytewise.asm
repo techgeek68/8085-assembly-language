@@ -1,4 +1,4 @@
-; Program 13: Addition of Two 16 bit Numbers (byte by byte method, shown for comparison)
+; Program 13 Addition of Two 16 bit Numbers (byte by byte method, shown for comparison)
         LHLD 4000H
         XCHG
         LHLD 4002H
