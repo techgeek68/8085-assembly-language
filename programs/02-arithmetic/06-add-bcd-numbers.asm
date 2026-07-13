@@ -1,4 +1,4 @@
-; Program 10: Addition of Ten BCD Numbers
+; Program 10 Addition of Ten BCD Numbers
         LXI  H, 9100H   ; base of ten BCD bytes
         MVI  C, 0AH     ; ten elements
         MVI  D, 00H     ; carry or overflow counter
