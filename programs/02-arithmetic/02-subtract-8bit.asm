@@ -1,4 +1,4 @@
-; Program 6: Subtraction of Two 8 bit Numbers
+; Program 6 Subtraction of Two 8 bit Numbers
         LXI  H, 4000H   ; HL points to the minuend
         MOV  A, M       ; A gets the minuend
         INX  H          ; HL points to the subtrahend
