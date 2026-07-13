@@ -1,12 +1,13 @@
-; Program 32: Multiplication of Two 16 bit Numbers
-; Multiplicand at 3500H (low) / 3501H (high)
-; Multiplier at 3502H (low) / 3503H (high)
-; High word of product stored at 3600H/3601H, low word at 3602H/3603H
-        LHLD 3500H     ; HL gets the multiplicand
+; Program 32: Multiplication of Two 16-bit Numbers
+; Multiplicand at 4000H (low) / 4001H (high)
+; Multiplier at 4002H (low) / 4003H (high)
+; High word of product stored at 2000H/2001H, low word at 2002H/2003H
+        LHLD 4000H     ; HL gets the multiplicand
         MOV  B, H
         MOV  C, L      ; BC keeps the multiplicand fixed for the whole routine
-        LHLD 3502H     ; HL gets the multiplier
-        XCHG           ; DE gets the multiplier, doubling as the product's low word
+        LHLD 4002H     ; HL gets the multiplier
+        MOV  D, H
+        MOV  E, L      ; DE gets the multiplier, doubling as the product's low word
         LXI  H, 0000H  ; HL is the product's high word, starting at zero
         MVI  A, 10H    ; sixteen iterations, one per bit
         STA  35FFH     ; a spare memory byte used as the loop counter
@@ -32,7 +33,7 @@ SHIFT:  MOV  A, H
         DCR  A
         STA  35FFH
         JNZ  MLOOP
-        SHLD 3600H     ; store the product's high word
+        SHLD 2000H     ; store the product's high word
         XCHG
-        SHLD 3602H     ; store the product's low word
+        SHLD 2002H     ; store the product's low word
         HLT
