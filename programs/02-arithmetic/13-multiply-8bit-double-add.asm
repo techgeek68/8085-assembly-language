@@ -1,4 +1,4 @@
-; Program 29: Multiplication of Two 8 bit Numbers by the Double and Add Method
+; Program 29 Multiplication of Two 8 bit Numbers by the Double and Add Method
         LXI  H, 4000H
         MOV  E, M       ; E gets the multiplicand
         MVI  D, 00H     ; DE now holds the multiplicand as a 16 bit value
