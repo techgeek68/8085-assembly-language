@@ -1,4 +1,4 @@
-; Program 3: Exchange Contents of Two Memory Locations (direct addressing)
+; Program 3 Exchange Contents of Two Memory Locations (direct addressing)
         LDA  2000H      ; A gets (2000H)
         MOV  B, A       ; save it in B
         LDA  4000H      ; A gets (4000H)
