@@ -1,4 +1,4 @@
-; Program 32: Multiplication of Two 16-bit Numbers
+; Program 32 Multiplication of Two 16-bit Numbers
 ; Multiplicand at 4000H (low) / 4001H (high)
 ; Multiplier at 4002H (low) / 4003H (high)
 ; High word of product stored at 2000H/2001H, low word at 2002H/2003H
