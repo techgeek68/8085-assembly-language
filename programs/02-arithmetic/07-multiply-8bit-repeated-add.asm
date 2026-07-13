@@ -1,4 +1,4 @@
-; Program 11: Multiplication of Two 8 bit Numbers by Repeated Addition
+; Program 11 Multiplication of Two 8 bit Numbers by Repeated Addition
         LDA  9000H      ; A gets the multiplicand
         MOV  C, A       ; C keeps the multiplicand safe
         LDA  9001H      ; A gets the multiplier
