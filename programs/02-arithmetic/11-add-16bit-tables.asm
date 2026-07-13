@@ -1,7 +1,7 @@
 ; Program 15 Addition of Corresponding Elements of Two 16 bit Tables
         LXI  H, 4000   ; table 1 pointer
         LXI  B, 2000   ; table 2 pointer
-        LXI  D, 4010   ; result table pointer
+        LXI  D, 400A   ; result table pointer
         MVI  A, 0AH     ; ten 16 bit elements
 UP:     PUSH PSW        ; A is needed as a counter, so save it
         LDAX B          ; A gets table 2's low byte
