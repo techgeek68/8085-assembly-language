@@ -1,4 +1,4 @@
-; Program 16: Division of Two 8 bit Numbers
+; Program 16 Division of Two 8 bit Numbers
         LDA  4000H      ; A gets the dividend
         MOV  E, A       ; E holds the running remainder
         LDA  2000H      ; A gets the divisor
